@@ -18,6 +18,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
@@ -26,10 +27,10 @@ private const val MY_PERMISSIONS_REQUEST_LOCATION = 99
 private const val RADIUS_LARGE = 100.0
 private const val STROKE_WIDTH = 1f
 
-class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
+class MapsActivity : AppCompatActivity(), OnMapReadyCallback, MapActivityItf {
 
     private lateinit var mMap: GoogleMap
-    private lateinit var locationRequest : LocationRequest
+    private lateinit var locationRequest: LocationRequest
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,7 +45,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
 
-    @SuppressLint("MissingPermission")
+    @SuppressLint("MissingPermission", "ObsoleteSdkInt")
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
         locationRequest = LocationRequest.create()
@@ -53,9 +54,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         locationRequest.priority = LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY
 
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(this,
-                    Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                )
+                == PackageManager.PERMISSION_GRANTED
+            ) {
                 //Location Permission already granted
                 fusedLocationClient.requestLocationUpdates(locationRequest, mLocationCallback, Looper.myLooper())
                 mMap.isMyLocationEnabled = true
@@ -63,14 +67,15 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 //Request Location Permission
                 checkPermission()
             }
-        }
-        else {
+        } else {
             fusedLocationClient.requestLocationUpdates(locationRequest, mLocationCallback, Looper.myLooper())
             mMap.isMyLocationEnabled = true
         }
+
+        loadMarks()
     }
 
-    private var mLocationCallback : LocationCallback = object:LocationCallback() {
+    private var mLocationCallback: LocationCallback = object : LocationCallback() {
 
         override fun onLocationResult(locationResult: LocationResult) {
 
@@ -78,19 +83,19 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
             if (locationList.count() > 0) {
                 //The last location in the list is the newest
-                val location : Location = locationList[locationList.count() - 1]
+                val location: Location = locationList[locationList.count() - 1]
                 Log.i("MapsActivity", "Location: " + location.latitude + " " + location.longitude)
 
                 //Move camera to last current location
 
-                mMap.clear()
+//                mMap.clear()
 
                 val latLng = LatLng(location.latitude, location.longitude)
                 val cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 15f)
                 mMap.animateCamera(cameraUpdate)
 
                 //presenter.startGetAddress(location.latitude.toString() + "," + location.longitude.toString())
-                Toast.makeText(this@MapsActivity,"l..." + location.longitude.toString(),Toast.LENGTH_LONG).show()
+                Toast.makeText(this@MapsActivity, "l..." + location.longitude.toString(), Toast.LENGTH_LONG).show()
 //                mMap.addCircle(
 //                    CircleOptions().apply {
 //                        center(latLng )
@@ -106,27 +111,43 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun checkPermission() {
 
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION)
-            != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            )
+            != PackageManager.PERMISSION_GRANTED
+        ) {
 
             // Permission is not granted
             // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    Manifest.permission.ACCESS_FINE_LOCATION)) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(
+                    this,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                )
+            ) {
 
             } else {
                 // No explanation needed, we can request the permission.
-                ActivityCompat.requestPermissions(this,
+                ActivityCompat.requestPermissions(
+                    this,
                     arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                    MY_PERMISSIONS_REQUEST_LOCATION)
+                    MY_PERMISSIONS_REQUEST_LOCATION
+                )
 
-                Log.d("Permission access","First time")
+                Log.d("Permission access", "First time")
             }
         } else {
             // Permission has already been granted
-            Log.d("Permission access","Permission has already been granted")
+            Log.d("Permission access", "Permission has already been granted")
 
         }
+    }
+
+    override fun loadMarks() {
+        val dhaka = LatLng(10.796456, 106.697287)
+        mMap.addMarker(
+            MarkerOptions().position(dhaka).title("Marker in Dhaka")
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.coffee))
+        )
     }
 }
