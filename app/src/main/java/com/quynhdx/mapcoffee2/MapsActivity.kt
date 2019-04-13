@@ -33,7 +33,7 @@ import kotlin.concurrent.timerTask
 
 
 private const val MY_PERMISSIONS_REQUEST_LOCATION = 99
-//, DirectionFinderListener
+
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback, MapActivityItf, DirectionCallback {
 
     private var btnRequestDirection: Button? = null
@@ -46,7 +46,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, MapActivityItf, Di
     private var origin = LatLng(10.790456, 106.690287)
     private var destination = LatLng(10.794456, 106.694287)
 
-    private val serverKey = "AIzaSyBcmNAo_6LdQHVlNwgO4h5TiU2VuvnojPw"
+    private val serverKey = "AIzaSyBmhgYek0liHgKHXnrkErK34YsEJRog2dk"
 
     @SuppressLint("MissingPermission")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,8 +58,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, MapActivityItf, Di
             requestDirection()
         }
 
-        place1 = MarkerOptions().position(LatLng(10.790456, 106.690287)).title("Location 1")
-        place2 = MarkerOptions().position(LatLng(10.794456, 106.694287)).title("Location 2")
+        place1 = MarkerOptions().position(origin).title("Location 1")
+        place2 = MarkerOptions().position(destination).title("Location 2")
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         val mapFragment = supportFragmentManager
@@ -91,7 +91,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, MapActivityItf, Di
                 fusedLocationClient.requestLocationUpdates(locationRequest, mLocationCallback, Looper.myLooper())
                 mMap.isMyLocationEnabled = true
             } else {
-                //Request Location Permission
                 checkPermission()
             }
         } else {
@@ -116,13 +115,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, MapActivityItf, Di
                 val location: Location = locationList[locationList.count() - 1]
                 Log.i("MapsActivity", "Location: " + location.latitude + " " + location.longitude)
 
-//                mMap.clear()
-
                 val latLng = LatLng(location.latitude, location.longitude)
                 val cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 15f)
                 mMap.animateCamera(cameraUpdate)
+                // update origin
+                origin = latLng
 
-                //presenter.startGetAddress(location.latitude.toString() + "," + location.longitude.toString())
                 Toast.makeText(this@MapsActivity, "longitude..." + location.longitude.toString(), Toast.LENGTH_LONG).show()
             }
         }
@@ -130,21 +128,16 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, MapActivityItf, Di
 
     private fun checkPermission() {
 
-        if (ContextCompat.checkSelfPermission(
-                this,
+        if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION
             )
             != PackageManager.PERMISSION_GRANTED
         ) {
 
-            // Permission is not granted
-            // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(
-                    this,
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                )
+            if ( ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.ACCESS_FINE_LOCATION )
             ) {
-
+                Log.d("MapsActivity Permission access", "mmmmmmmmmm")
             } else {
                 // No explanation needed, we can request the permission.
                 ActivityCompat.requestPermissions(
@@ -198,7 +191,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, MapActivityItf, Di
         Toast.makeText(this@MapsActivity, "Success with status : " + direction.status, Toast.LENGTH_SHORT).show()
         if (direction.isOK) {
             val route = direction.routeList[0]
-            mMap.addMarker(place1)
+//            mMap.addMarker(place1)
             mMap.addMarker(place2)
 
             val directionPositionList = route.legList[0].directionPoint
@@ -207,9 +200,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, MapActivityItf, Di
             btnRequestDirection!!.visibility = View.GONE
         } else {
             Log.d("MapsActivity onDirectionSuccess ...." , direction.status)
-//            Timer("SettingUp", false).schedule(5000) {
-//                requestDirection()
-//            }
         }
     }
 
