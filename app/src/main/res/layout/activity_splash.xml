@@ -8,7 +8,7 @@
         tools:context=".view.Splash">
 
     <com.airbnb.lottie.LottieAnimationView
-            android:background="@color/colorCircleMap"
+            android:background="@color/splash"
             android:id="@+id/animation_splash"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
