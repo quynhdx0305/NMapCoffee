@@ -1,4 +1,4 @@
-package com.quynhdx.mapcoffee2
+package com.quynhdx.mapcoffee2.view
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -27,9 +27,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
-import java.util.*
-import kotlin.concurrent.schedule
-import kotlin.concurrent.timerTask
+import com.quynhdx.mapcoffee2.R
 
 
 private const val MY_PERMISSIONS_REQUEST_LOCATION = 99
