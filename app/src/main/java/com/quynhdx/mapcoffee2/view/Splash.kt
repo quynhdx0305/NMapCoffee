@@ -70,7 +70,9 @@ class Splash : AppCompatActivity() {
 
                 when(check) {
                     DONE -> {
-                        startActivity(Intent(this@Splash, MapsActivity::class.java))
+                        val intent = Intent(this@Splash, MapsActivity::class.java)
+                        intent.putExtra("listDataCoffee", listDataCoffee)
+                        startActivity( intent )
                         finish()
                     }
                     NOT_YET -> animation_splash.playAnimation()

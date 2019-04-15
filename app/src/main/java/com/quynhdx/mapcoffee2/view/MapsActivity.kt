@@ -2,6 +2,7 @@ package com.quynhdx.mapcoffee2.view
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.Location
@@ -28,36 +29,37 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.quynhdx.mapcoffee2.R
+import com.quynhdx.mapcoffee2.model.ListCoffee_
+import com.quynhdx.mapcoffee2.presenter.MapsPresenter
+import com.quynhdx.mapcoffee2.presenter.MapsPresenterItf
+import kotlinx.android.synthetic.main.activity_maps.*
 
 
 private const val MY_PERMISSIONS_REQUEST_LOCATION = 99
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback, MapActivityItf, DirectionCallback {
-
-    private var btnRequestDirection: Button? = null
-
     private lateinit var mMap: GoogleMap
+    private lateinit var presenter: MapsPresenterItf
+
     private lateinit var locationRequest: LocationRequest
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private var place1: MarkerOptions? = null
-    private var place2: MarkerOptions? = null
-    private var origin = LatLng(10.790456, 106.690287)
-    private var destination = LatLng(10.794456, 106.694287)
-
+    private var origin: LatLng? = null // my location
+    private var destination: LatLng? = null
     private val serverKey = "AIzaSyBmhgYek0liHgKHXnrkErK34YsEJRog2dk"
+
+    var listDataCoffee : ArrayList<ListCoffee_> = arrayListOf()
 
     @SuppressLint("MissingPermission")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
+        // TODO get data from Splash
+        val intent = intent
+        listDataCoffee = intent.getParcelableArrayListExtra("listDataCoffee")
 
-        btnRequestDirection = findViewById(R.id.btn_request_direction)
-        btnRequestDirection!!.setOnClickListener {
+        btn_request_direction.setOnClickListener {
             requestDirection()
         }
-
-        place1 = MarkerOptions().position(origin).title("Location 1")
-        place2 = MarkerOptions().position(destination).title("Location 2")
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         val mapFragment = supportFragmentManager
@@ -66,9 +68,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, MapActivityItf, Di
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
+        Toast.makeText(this@MapsActivity,"aaaaa",Toast.LENGTH_LONG).show()
+
+        MapsPresenter(this)
     }
-
-
 
     @SuppressLint("MissingPermission", "ObsoleteSdkInt")
     override fun onMapReady(googleMap: GoogleMap) {
@@ -96,11 +99,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, MapActivityItf, Di
             mMap.isMyLocationEnabled = true
         }
 
-//        loadMarks()
-//        Timer("SettingUp", false).schedule(5000) {
-//            requestDirection()
-//        }
     }
+
+
 
     private var mLocationCallback: LocationCallback = object : LocationCallback() {
 
@@ -111,13 +112,14 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, MapActivityItf, Di
             if (locationList.count() > 0) {
                 //The last location in the list is the newest
                 val location: Location = locationList[locationList.count() - 1]
-                Log.i("MapsActivity", "Location: " + location.latitude + " " + location.longitude)
+                Log.i("MapsActivity", "my Location: " + location.latitude + " " + location.longitude)
 
                 val latLng = LatLng(location.latitude, location.longitude)
                 val cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 15f)
                 mMap.animateCamera(cameraUpdate)
-                // update origin
+                // TODO update my location and set Marker near me
                 origin = latLng
+                presenter.setMarker(listDataCoffee, location)
 
                 Toast.makeText(this@MapsActivity, "longitude..." + location.longitude.toString(), Toast.LENGTH_LONG).show()
             }
@@ -153,23 +155,14 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, MapActivityItf, Di
         }
     }
 
-    override fun loadMarks() {
-        mMap.addMarker(place1)
-        mMap.addMarker(place2)
+    override fun loadMarks(location: LatLng, name: String?) {
 
-//        Log.d("loadMarks", getUrl(place1!!.position, place2!!.position, "driving"))
-//        val dhaka = LatLng(10.796456, 106.697287)
-//        mMap.addMarker(
-//            MarkerOptions().position(dhaka).title("Marker in Dhaka")
-//                .icon(BitmapDescriptorFactory.fromResource(R.drawable.coffee))
-//        )
-//
-//        val line = mMap.addPolyline(
-//            PolylineOptions()
-//                .add(dhaka, LatLng(10.716356, 106.647287))
-//                .width(5f)
-//                .color(Color.RED)
-//        )
+        mMap.addMarker(MarkerOptions().position(location).title(name)
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.coffee)))
+    }
+
+    override fun setPresenter(presenter: MapsPresenterItf) {
+        this.presenter = presenter
     }
 
     private fun requestDirection() {
@@ -190,12 +183,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, MapActivityItf, Di
         if (direction.isOK) {
             val route = direction.routeList[0]
 //            mMap.addMarker(place1)
-            mMap.addMarker(place2)
+//            mMap.addMarker(place2)
 
             val directionPositionList = route.legList[0].directionPoint
             mMap.addPolyline(DirectionConverter.createPolyline(this, directionPositionList, 5, Color.RED))
 //            setCameraWithCoordinationBounds(route)
-            btnRequestDirection!!.visibility = View.GONE
+            btn_request_direction.visibility = View.GONE
         } else {
             Log.d("MapsActivity onDirectionSuccess ...." , direction.status)
         }
