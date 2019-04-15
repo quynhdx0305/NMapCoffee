@@ -36,8 +36,11 @@ import kotlinx.android.synthetic.main.activity_maps.*
 
 
 private const val MY_PERMISSIONS_REQUEST_LOCATION = 99
+private const val TAG = "MapsActivity"
+class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
+                    MapActivityItf, DirectionCallback , GoogleMap.OnMarkerClickListener {
 
-class MapsActivity : AppCompatActivity(), OnMapReadyCallback, MapActivityItf, DirectionCallback {
+
     private lateinit var mMap: GoogleMap
     private lateinit var presenter: MapsPresenterItf
 
@@ -68,8 +71,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, MapActivityItf, Di
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
-        Toast.makeText(this@MapsActivity,"aaaaa",Toast.LENGTH_LONG).show()
-
         MapsPresenter(this)
     }
 
@@ -98,10 +99,16 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, MapActivityItf, Di
             fusedLocationClient.requestLocationUpdates(locationRequest, mLocationCallback, Looper.myLooper())
             mMap.isMyLocationEnabled = true
         }
-
+        mMap.setOnMarkerClickListener(this)
     }
 
+    override fun onMarkerClick(marker: Marker?): Boolean {
+        if (marker != null) {
+            presenter.getMarker(marker, listDataCoffee)
+        }
 
+            return false
+    }
 
     private var mLocationCallback: LocationCallback = object : LocationCallback() {
 
@@ -137,7 +144,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, MapActivityItf, Di
             if ( ActivityCompat.shouldShowRequestPermissionRationale(this,
                     Manifest.permission.ACCESS_FINE_LOCATION )
             ) {
-                Log.d("MapsActivity Permission access", "mmmmmmmmmm")
+                Log.d("MapsActivity Permission access", "ACCESS_FINE_LOCATION")
             } else {
                 // No explanation needed, we can request the permission.
                 ActivityCompat.requestPermissions(
@@ -153,6 +160,16 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, MapActivityItf, Di
             Log.d("MapsActivity Permission access", "Permission has already been granted")
 
         }
+    }
+
+    override fun showMarkDidTap(didTapCoffee: ListCoffee_) {
+        //move camera
+        val latLng = LatLng(didTapCoffee.latitude!!.toDouble(),didTapCoffee.longitude!!.toDouble())
+        val cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 15f)
+        mMap.animateCamera(cameraUpdate)
+
+        destination = latLng
+        btn_request_direction.visibility = View.VISIBLE
     }
 
     override fun loadMarks(location: LatLng, name: String?) {
@@ -182,8 +199,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, MapActivityItf, Di
         Toast.makeText(this@MapsActivity, "Success with status : " + direction.status, Toast.LENGTH_SHORT).show()
         if (direction.isOK) {
             val route = direction.routeList[0]
-//            mMap.addMarker(place1)
-//            mMap.addMarker(place2)
 
             val directionPositionList = route.legList[0].directionPoint
             mMap.addPolyline(DirectionConverter.createPolyline(this, directionPositionList, 5, Color.RED))
