@@ -10,9 +10,11 @@ import android.widget.TextView
 import com.quynhdx.mapcoffee2.R
 import com.quynhdx.mapcoffee2.model.ListCoffee_
 import android.content.Context
+import android.util.Log
 import com.quynhdx.mapcoffee2.view.ListCoffeeActivity
-
-
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.RequestOptions.bitmapTransform
 
 
 class CoffeeAdapter(context: Context, view: ListCoffeeActivity) :
@@ -28,7 +30,7 @@ class CoffeeAdapter(context: Context, view: ListCoffeeActivity) :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CoffeeAdapter.ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_coffee,parent,false)
+        val view = LayoutInflater.from(parent.context).inflate(com.quynhdx.mapcoffee2.R.layout.item_coffee,parent,false)
         return ViewHolder(view)
     }
 
@@ -38,6 +40,10 @@ class CoffeeAdapter(context: Context, view: ListCoffeeActivity) :
         holder.tvName.text = dataCoffee.name
         holder.tvAddress.text = dataCoffee.address
         holder.ratingBar.rating = dataCoffee.vote?.toFloat() ?: 0.0F
+        // TODO Show background
+        Glide.with(context!!).load(dataCoffee.background)
+            .apply(RequestOptions.circleCropTransform())
+            .into(holder.imgLogo)
     }
 
     override fun getItemCount(): Int {
