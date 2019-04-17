@@ -37,6 +37,12 @@ import kotlinx.android.synthetic.main.activity_maps.*
 
 private const val MY_PERMISSIONS_REQUEST_LOCATION = 99
 private const val TAG = "MapsActivity"
+
+enum class TextButton {
+    FindCoffee,
+    FindDirection
+}
+
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
                     MapActivityItf, DirectionCallback , GoogleMap.OnMarkerClickListener {
 
@@ -50,9 +56,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
     private var destination: LatLng? = null
     private val serverKey = "AIzaSyBmhgYek0liHgKHXnrkErK34YsEJRog2dk"
 
+    var eButton = TextButton.FindCoffee
+
     var listDataCoffee : ArrayList<ListCoffee_> = arrayListOf()
 
-    @SuppressLint("MissingPermission")
+    @SuppressLint("MissingPermission", "SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
@@ -61,7 +69,15 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
         listDataCoffee = intent.getParcelableArrayListExtra("listDataCoffee")
 
         btn_request_direction.setOnClickListener {
-            requestDirection()
+            if (eButton == TextButton.FindCoffee) {
+                btn_request_direction.text = "Danh sách các quán caffe"
+                val intent_ = Intent(this@MapsActivity, ListCoffeeActivity::class.java)
+                intent_.putExtra("listDataCoffee", listDataCoffee)
+                startActivity( intent_ )
+            } else {
+                btn_request_direction.text = "Chỉ đường tới đây"
+                requestDirection()
+            }
         }
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
