@@ -60,10 +60,11 @@
             android:layout_marginEnd="8dp"/>
     <ImageView
             android:layout_width="32dp"
-            android:layout_height="32dp" tools:srcCompat="@tools:sample/avatars"
+            android:layout_height="32dp" tools:srcCompat="@drawable/ic_location_on_black_24dp"
             android:id="@+id/img_address"
             app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp" app:layout_constraintTop_toBottomOf="@+id/tv_time_open"/>
+            android:layout_marginTop="8dp" app:layout_constraintTop_toBottomOf="@+id/img_time"
+            app:srcCompat="@drawable/ic_location_on_black_24dp"/>
     <TextView
             android:text="địa chỉ"
             android:layout_width="wrap_content"
@@ -73,10 +74,11 @@
             app:layout_constraintBottom_toBottomOf="@+id/img_address"/>
     <ImageView
             android:layout_width="32dp"
-            android:layout_height="32dp" tools:srcCompat="@tools:sample/avatars"
+            android:layout_height="32dp" tools:srcCompat="@drawable/ic_local_phone_black_24dp"
             android:id="@+id/img_phone"
             app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp" app:layout_constraintTop_toBottomOf="@+id/img_address"/>
+            android:layout_marginTop="8dp" app:layout_constraintTop_toBottomOf="@+id/img_address"
+            app:srcCompat="@drawable/ic_local_phone_black_24dp"/>
     <TextView
             android:text="0987654321"
             android:layout_width="wrap_content"
@@ -86,10 +88,11 @@
             android:layout_marginStart="8dp"/>
     <ImageView
             android:layout_width="32dp"
-            android:layout_height="32dp" tools:srcCompat="@tools:sample/avatars"
+            android:layout_height="32dp" tools:srcCompat="@drawable/ic_public_black_24dp"
             android:id="@+id/img_web"
             app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp" app:layout_constraintTop_toBottomOf="@+id/img_phone"/>
+            android:layout_marginTop="8dp" app:layout_constraintTop_toBottomOf="@+id/img_phone"
+            app:srcCompat="@drawable/ic_public_black_24dp"/>
     <TextView
             android:text="https://abc.com"
             android:layout_width="wrap_content"
@@ -98,27 +101,35 @@
             app:layout_constraintStart_toEndOf="@+id/img_web"
             app:layout_constraintBottom_toBottomOf="@+id/img_web" android:textColorLink="@color/color1"/>
     <ImageView
-            android:layout_width="80dp"
-            android:layout_height="80dp" tools:srcCompat="@tools:sample/avatars"
-            android:id="@+id/img_1" android:layout_marginTop="8dp"
+            android:layout_width="120dp"
+            android:layout_height="120dp" tools:srcCompat="@tools:sample/avatars"
+            android:id="@+id/img_1" android:layout_marginTop="16dp"
             app:layout_constraintTop_toBottomOf="@+id/img_web" app:layout_constraintStart_toStartOf="parent"
             android:layout_marginStart="8dp"/>
     <ImageView
-            android:layout_width="80dp"
-            android:layout_height="80dp" tools:srcCompat="@tools:sample/avatars"
+            android:layout_width="120dp"
+            android:layout_height="120dp" tools:srcCompat="@tools:sample/avatars"
             android:id="@+id/img_2" android:layout_marginStart="8dp"
-            app:layout_constraintStart_toEndOf="@+id/img_1" android:layout_marginTop="8dp"
-            app:layout_constraintTop_toBottomOf="@+id/tv_web"/>
+            app:layout_constraintStart_toEndOf="@+id/img_1"
+            app:layout_constraintTop_toTopOf="@+id/img_1"/>
     <ImageView
-            android:layout_width="80dp"
-            android:layout_height="80dp" tools:srcCompat="@tools:sample/avatars"
+            android:layout_width="120dp"
+            android:layout_height="120dp" tools:srcCompat="@tools:sample/avatars"
             android:id="@+id/img_3" android:layout_marginStart="8dp"
             app:layout_constraintStart_toEndOf="@+id/img_2"
-            android:layout_marginTop="8dp" app:layout_constraintTop_toBottomOf="@+id/tv_web"/>
+            app:layout_constraintTop_toTopOf="@+id/img_2"/>
     <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/tv_time_open" android:layout_marginTop="8dp"
-            app:layout_constraintTop_toBottomOf="@+id/rb_star" app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="8dp" android:text="Giờ mở cửa: 06 - 22"/>
+            android:id="@+id/tv_time_open"
+            android:text="Giờ mở cửa: 06 - 22" app:layout_constraintStart_toEndOf="@+id/img_time"
+            android:layout_marginStart="8dp"
+            app:layout_constraintBottom_toBottomOf="@+id/img_time"/>
+    <ImageView
+            android:layout_width="32dp"
+            android:layout_height="32dp" tools:srcCompat="@drawable/ic_access_time_black_24dp"
+            android:id="@+id/img_time"
+            app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp" app:layout_constraintTop_toBottomOf="@+id/rb_star"
+            app:srcCompat="@drawable/ic_access_time_black_24dp"/>
 </android.support.constraint.ConstraintLayout>
