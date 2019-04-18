@@ -24,7 +24,7 @@ class ListCoffeeActivity : AppCompatActivity() {
 
         // TODO get data from MapsActivity
         val intent = intent
-        listDataCoffee = intent.getParcelableArrayListExtra("listDataCoffee")
+        listDataCoffee = intent.getParcelableArrayListExtra("listDataCoffeeNear")
 
         Log.d(TAG, listDataCoffee.count().toString())
         setup()
@@ -36,7 +36,7 @@ class ListCoffeeActivity : AppCompatActivity() {
 
         rcv_coffee.adapter = coffeeAdapter
         //recyclerView
-        rcv_coffee.setHasFixedSize(true)// the nay toi uu hoa du lieu
+        rcv_coffee.setHasFixedSize(true)
         val layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         rcv_coffee.layoutManager = layoutManager
         //................Chèn một kẻ ngang giữa các phần tử

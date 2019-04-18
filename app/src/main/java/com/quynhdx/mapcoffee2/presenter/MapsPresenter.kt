@@ -13,6 +13,8 @@ class MapsPresenter(val view : MapActivityItf) : MapsPresenterItf{
         view.setPresenter(this)
     }
 
+    var listDataCoffeeNear : ArrayList<ListCoffee_> = arrayListOf() // data new near my location
+
     override fun getMarker(marker: Marker, listDataCoffee: ArrayList<ListCoffee_>) {
 
         for ( coffeeLocation in listDataCoffee ) {
@@ -23,7 +25,7 @@ class MapsPresenter(val view : MapActivityItf) : MapsPresenterItf{
         }
     }
 
-    override fun setMarker(listDataCoffee: ArrayList<ListCoffee_>, mLocation: Location) {
+    override fun setMarker(listDataCoffee: ArrayList<ListCoffee_>, mLocation: Location): ArrayList<ListCoffee_> {
 
         for ( mCoffee in listDataCoffee ) {
             val longitude = mCoffee.longitude!!.toDouble()
@@ -36,9 +38,12 @@ class MapsPresenter(val view : MapActivityItf) : MapsPresenterItf{
             val far = mLocation.distanceTo(coffeeLocation) / 1000
 
             if( far <= 5.0) {
-                //TODO far <= 5km
+                //TODO far <= 5km and create listDataCoffeeNear new data
+                listDataCoffeeNear.add(mCoffee)
                 view.loadMarks(LatLng(latitude,longitude), name)
             }
         }
+
+        return listDataCoffeeNear
     }
 }

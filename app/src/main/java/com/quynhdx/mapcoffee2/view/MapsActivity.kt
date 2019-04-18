@@ -14,7 +14,6 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.util.Log
 import android.view.View
-import android.widget.Button
 import android.widget.Toast
 import com.akexorcist.googledirection.DirectionCallback
 import com.akexorcist.googledirection.GoogleDirection
@@ -38,13 +37,13 @@ import kotlinx.android.synthetic.main.activity_maps.*
 private const val MY_PERMISSIONS_REQUEST_LOCATION = 99
 private const val TAG = "MapsActivity"
 
-enum class TextButton {
-    FindCoffee,
-    FindDirection
+enum class DirectionButton {
+    Marker,
+    NoMarker
 }
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
-                    MapActivityItf, DirectionCallback , GoogleMap.OnMarkerClickListener {
+    MapActivityItf, DirectionCallback, GoogleMap.OnMarkerClickListener {
 
 
     private lateinit var mMap: GoogleMap
@@ -56,9 +55,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
     private var destination: LatLng? = null
     private val serverKey = "AIzaSyBmhgYek0liHgKHXnrkErK34YsEJRog2dk"
 
-    var eButton = TextButton.FindCoffee
+    var eButton = DirectionButton.NoMarker
 
-    var listDataCoffee : ArrayList<ListCoffee_> = arrayListOf()
+    var listDataCoffee: ArrayList<ListCoffee_> = arrayListOf()
+    var listDataCoffeeNear: ArrayList<ListCoffee_> = arrayListOf() // data new near my location
 
     @SuppressLint("MissingPermission", "SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -68,15 +68,16 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
         val intent = intent
         listDataCoffee = intent.getParcelableArrayListExtra("listDataCoffee")
 
+        btn_request_list_coffee.setOnClickListener {
+            val intent_ = Intent(this@MapsActivity, ListCoffeeActivity::class.java)
+            intent_.putExtra("listDataCoffeeNear", listDataCoffeeNear)
+            startActivity(intent_)
+        }
         btn_request_direction.setOnClickListener {
-            if (eButton == TextButton.FindCoffee) {
-                btn_request_direction.text = "Danh sách các quán caffe"
-                val intent_ = Intent(this@MapsActivity, ListCoffeeActivity::class.java)
-                intent_.putExtra("listDataCoffee", listDataCoffee)
-                startActivity( intent_ )
-            } else {
-                btn_request_direction.text = "Chỉ đường tới đây"
+            if (eButton == DirectionButton.Marker) {
                 requestDirection()
+            } else {
+                Toast.makeText(this, "Chọn vị trí bạn muốn đến", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -120,10 +121,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
 
     override fun onMarkerClick(marker: Marker?): Boolean {
         if (marker != null) {
-            presenter.getMarker(marker, listDataCoffee)
-        }
+            presenter.getMarker(marker, listDataCoffeeNear)
 
-            return false
+            eButton = DirectionButton.Marker
+            return true
+        }
+        return false
     }
 
     private var mLocationCallback: LocationCallback = object : LocationCallback() {
@@ -142,23 +145,27 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
                 mMap.animateCamera(cameraUpdate)
                 // TODO update my location and set Marker near me
                 origin = latLng
-                presenter.setMarker(listDataCoffee, location)
+                listDataCoffeeNear = presenter.setMarker(listDataCoffee, location)
 
-                Toast.makeText(this@MapsActivity, "longitude..." + location.longitude.toString(), Toast.LENGTH_LONG).show()
+                Toast.makeText(this@MapsActivity, "longitude..." + location.longitude.toString(), Toast.LENGTH_LONG)
+                    .show()
             }
         }
     }
 
     private fun checkPermission() {
 
-        if (ContextCompat.checkSelfPermission(this,
+        if (ContextCompat.checkSelfPermission(
+                this,
                 Manifest.permission.ACCESS_FINE_LOCATION
             )
             != PackageManager.PERMISSION_GRANTED
         ) {
 
-            if ( ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    Manifest.permission.ACCESS_FINE_LOCATION )
+            if (ActivityCompat.shouldShowRequestPermissionRationale(
+                    this,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                )
             ) {
                 Log.d("MapsActivity Permission access", "ACCESS_FINE_LOCATION")
             } else {
@@ -180,18 +187,19 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
 
     override fun showMarkDidTap(didTapCoffee: ListCoffee_) {
         //move camera
-        val latLng = LatLng(didTapCoffee.latitude!!.toDouble(),didTapCoffee.longitude!!.toDouble())
+        val latLng = LatLng(didTapCoffee.latitude!!.toDouble(), didTapCoffee.longitude!!.toDouble())
         val cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 15f)
         mMap.animateCamera(cameraUpdate)
 
         destination = latLng
-        btn_request_direction.visibility = View.VISIBLE
     }
 
     override fun loadMarks(location: LatLng, name: String?) {
 
-        mMap.addMarker(MarkerOptions().position(location).title(name)
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.coffee)))
+        mMap.addMarker(
+            MarkerOptions().position(location).title(name)
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.coffee))
+        )
     }
 
     override fun setPresenter(presenter: MapsPresenterItf) {
@@ -203,7 +211,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
         GoogleDirection.withServerKey(serverKey)
             .from(origin)
             .to(destination)
-            .transportMode(TransportMode.WALKING)
+            .transportMode(TransportMode.DRIVING)
             .execute(this)
     }
 
@@ -219,9 +227,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
             val directionPositionList = route.legList[0].directionPoint
             mMap.addPolyline(DirectionConverter.createPolyline(this, directionPositionList, 5, Color.RED))
 //            setCameraWithCoordinationBounds(route)
-            btn_request_direction.visibility = View.GONE
         } else {
-            Log.d("MapsActivity onDirectionSuccess ...." , direction.status)
+            Log.d("MapsActivity onDirectionSuccess ....", direction.status)
         }
     }
 

@@ -7,5 +7,5 @@ import com.quynhdx.mapcoffee2.model.ListCoffee_
 
 interface MapsPresenterItf {
     fun getMarker( marker: Marker, listDataCoffee: ArrayList<ListCoffee_> )
-    fun setMarker( listDataCoffee: ArrayList<ListCoffee_>, mLocation: Location )
+    fun setMarker( listDataCoffee: ArrayList<ListCoffee_>, mLocation: Location ): ArrayList<ListCoffee_>
 }
