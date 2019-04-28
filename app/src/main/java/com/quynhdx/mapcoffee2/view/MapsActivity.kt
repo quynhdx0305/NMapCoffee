@@ -65,8 +65,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
         // TODO get data from Splash
-        val intent = intent
-        listDataCoffee = intent.getParcelableArrayListExtra("listDataCoffee")
+//        val intent = intent
+//        listDataCoffee = intent.getParcelableArrayListExtra("listDataCoffee")
+        val bundle = intent.getBundleExtra("dataCoffeeBundle")
+        listDataCoffee = bundle.getParcelableArrayList("listDataCoffee")
 
         btn_request_list_coffee.setOnClickListener {
             val intent_ = Intent(this@MapsActivity, ListCoffeeActivity::class.java)

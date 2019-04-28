@@ -6,62 +6,64 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
-class ListCoffee_() : Parcelable {
+data class ListCoffee_(
 
     @SerializedName("id")
     @Expose
-    var id: String? = null
+    var id: String? = null,
     @SerializedName("name")
     @Expose
-    var name: String? = null
+    var name: String? = null,
     @SerializedName("address")
     @Expose
-    var address: String? = null
+    var address: String? = null,
     @SerializedName("vote")
     @Expose
-    var vote: String? = null
+    var vote: String? = null,
     @SerializedName("number votate")
     @Expose
-    var numberVotate: String? = null
+    var numberVotate: String? = null,
     @SerializedName("background")
     @Expose
-    var background: String? = null
+    var background: String? = null,
     @SerializedName("longitude")
     @Expose
-    var longitude: String? = null
+    var longitude: String? = null,
     @SerializedName("latitude")
     @Expose
-    var latitude: String? = null
+    var latitude: String? = null,
     @SerializedName("phone")
     @Expose
-    var phone: String? = null
+    var phone: String? = null,
     @SerializedName("time open")
     @Expose
-    var timeOpen: String? = null
+    var timeOpen: String? = null,
     @SerializedName("web")
     @Expose
-    var web: String? = null
+    var web: String? = null,
     @SerializedName("image")
     @Expose
-    var image: List<String>? = null
+    var image: List<String>? = null,
     @SerializedName("evaluate")
     @Expose
     var evaluate: List<Evaluate>? = null
 
-    constructor(parcel: Parcel) : this() {
-        id = parcel.readString()
-        name = parcel.readString()
-        address = parcel.readString()
-        vote = parcel.readString()
-        numberVotate = parcel.readString()
-        background = parcel.readString()
-        longitude = parcel.readString()
-        latitude = parcel.readString()
-        phone = parcel.readString()
-        timeOpen = parcel.readString()
-        web = parcel.readString()
-        image = parcel.createStringArrayList()
-    }
+) : Parcelable {
+    constructor(parcel: Parcel) : this(
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readString(),
+        parcel.createStringArrayList(),
+        parcel.createTypedArrayList(Evaluate)
+    )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(id)
@@ -76,6 +78,7 @@ class ListCoffee_() : Parcelable {
         parcel.writeString(timeOpen)
         parcel.writeString(web)
         parcel.writeStringList(image)
+        parcel.writeTypedList(evaluate)
     }
 
     override fun describeContents(): Int {
@@ -91,5 +94,4 @@ class ListCoffee_() : Parcelable {
             return arrayOfNulls(size)
         }
     }
-
 }

@@ -71,7 +71,10 @@ class Splash : AppCompatActivity() {
                 when(check) {
                     DONE -> {
                         val intent = Intent(this@Splash, MapsActivity::class.java)
-                        intent.putExtra("listDataCoffee", listDataCoffee)
+                        val bundle = Bundle()
+
+                        bundle.putParcelableArrayList("listDataCoffee", listDataCoffee)
+                        intent.putExtra("dataCoffeeBundle", bundle)
                         startActivity( intent )
                         finish()
                     }

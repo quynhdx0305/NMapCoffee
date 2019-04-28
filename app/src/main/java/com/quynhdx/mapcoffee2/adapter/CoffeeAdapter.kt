@@ -38,7 +38,6 @@ class CoffeeAdapter(context: Context, view: ListCoffeeActivity) :
 
     override fun onBindViewHolder(holder: CoffeeAdapter.ViewHolder, position: Int) {
         val dataCoffee = data[position]
-//        dataCoffeeNear = dataCoffee
 
         holder.tvName.text = dataCoffee.name
         holder.tvAddress.text = dataCoffee.address

@@ -17,12 +17,13 @@
             android:layout_marginStart="8dp"/>
     <TextView
             android:text="Tên quán"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:id="@+id/tv_Name" app:layout_constraintStart_toEndOf="@+id/img_logo"
             android:layout_marginStart="8dp" android:layout_marginTop="8dp"
             app:layout_constraintTop_toTopOf="@+id/img_logo"
-            style="@android:style/Widget.DeviceDefault.TextView.SpinnerItem"/>
+            style="@android:style/Widget.DeviceDefault.TextView.SpinnerItem"
+            app:layout_constraintEnd_toStartOf="@+id/ratingBar" android:layout_marginEnd="8dp"/>
     <TextView
             android:text="Đỉa chỉ"
             android:layout_width="0dp"
@@ -36,14 +37,13 @@
     />
     <RatingBar
             android:layout_width="wrap_content"
-            android:layout_height="32dp"
+            android:layout_height="wrap_content"
             android:id="@+id/ratingBar"
             app:layout_constraintTop_toTopOf="parent"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             android:rating="5"
-            style="@style/Widget.AppCompat.RatingBar.Indicator" android:progressTint="@color/color4"
+            style="@android:style/Widget.DeviceDefault.Light.RatingBar.Indicator" android:progressTint="@color/color4"
     />
     <Space
             android:layout_width="wrap_content"
