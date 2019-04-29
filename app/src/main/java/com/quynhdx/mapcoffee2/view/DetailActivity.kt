@@ -1,6 +1,8 @@
 package com.quynhdx.mapcoffee2.view
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.DividerItemDecoration
@@ -13,6 +15,8 @@ import com.quynhdx.mapcoffee2.R
 import com.quynhdx.mapcoffee2.adapter.CommentAdapter
 import com.quynhdx.mapcoffee2.model.ListCoffee_
 import kotlinx.android.synthetic.main.activity_detail.*
+
+
 
 private const val TAG = "DetailActivity"
 
@@ -32,6 +36,15 @@ class DetailActivity : AppCompatActivity() {
 
         Log.d(TAG,"data list comment" + dataCoffee.evaluate!!.count().toString())
         setupView()
+
+        btn_direction2.setOnClickListener {
+            // TODO finish ListCoffeeActivity
+            val intent2 = Intent("finish")
+            sendBroadcast(intent2)
+            // TODO send id coffee to MapActivity
+
+            finish()
+        }
     }
 
     @SuppressLint("SetTextI18n")
