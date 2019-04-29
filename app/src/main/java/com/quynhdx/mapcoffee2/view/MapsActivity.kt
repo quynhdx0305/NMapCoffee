@@ -2,7 +2,9 @@ package com.quynhdx.mapcoffee2.view
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.Location
@@ -149,8 +151,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
                 origin = latLng
                 listDataCoffeeNear = presenter.setMarker(listDataCoffee, location)
 
-                Toast.makeText(this@MapsActivity, "longitude..." + location.longitude.toString(), Toast.LENGTH_LONG)
-                    .show()
+//                Toast.makeText(this@MapsActivity, "longitude..." + location.longitude.toString(), Toast.LENGTH_LONG)
+//                    .show()
             }
         }
     }
@@ -208,7 +210,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
         this.presenter = presenter
     }
 
-    private fun requestDirection() {
+    override fun requestDirection() {
         Toast.makeText(this@MapsActivity, "Direction Requesting...", Toast.LENGTH_SHORT).show()
         GoogleDirection.withServerKey(serverKey)
             .from(origin)
@@ -237,5 +239,15 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
 
     override fun onDirectionFailure(t: Throwable?) {
         Log.d("MapsActivity onDirectionFailure....", t?.message)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val sharedPref: SharedPreferences = getSharedPreferences("DetailActivity", Context.MODE_PRIVATE)
+        val _id = sharedPref.getString("id","0")
+        if ( _id != "0") {
+            sharedPref.edit().putString("id","0").apply()
+            presenter.findMarkerById(_id!! ,listDataCoffeeNear)
+        }
     }
 }

@@ -9,4 +9,5 @@ interface MapActivityItf {
     fun setPresenter(presenter: MapsPresenterItf)
     fun loadMarks(location: LatLng, name: String?)
     fun showMarkDidTap(didTapCoffee : ListCoffee_)
+    fun requestDirection()
 }

@@ -2,7 +2,9 @@ package com.quynhdx.mapcoffee2.view
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.DividerItemDecoration
@@ -32,7 +34,6 @@ class DetailActivity : AppCompatActivity() {
         // TODO get data from Coffee Adapter
         val intent = intent
         dataCoffee = intent.getParcelableExtra("dataCoffee")
-        Toast.makeText(this, dataCoffee.id, Toast.LENGTH_LONG).show()
 
         Log.d(TAG,"data list comment" + dataCoffee.evaluate!!.count().toString())
         setupView()
@@ -42,7 +43,8 @@ class DetailActivity : AppCompatActivity() {
             val intent2 = Intent("finish")
             sendBroadcast(intent2)
             // TODO send id coffee to MapActivity
-
+            val sharedPref: SharedPreferences = getSharedPreferences(TAG, Context.MODE_PRIVATE)
+            sharedPref.edit().putString("id",dataCoffee.id).apply()
             finish()
         }
     }

@@ -15,6 +15,7 @@ class MapsPresenter(val view : MapActivityItf) : MapsPresenterItf{
 
     var listDataCoffeeNear : ArrayList<ListCoffee_> = arrayListOf() // data new near my location
 
+
     override fun getMarker(marker: Marker, listDataCoffee: ArrayList<ListCoffee_>) {
 
         for ( coffeeLocation in listDataCoffee ) {
@@ -24,6 +25,7 @@ class MapsPresenter(val view : MapActivityItf) : MapsPresenterItf{
             }
         }
     }
+
 
     override fun setMarker(listDataCoffee: ArrayList<ListCoffee_>, mLocation: Location): ArrayList<ListCoffee_> {
 
@@ -46,4 +48,16 @@ class MapsPresenter(val view : MapActivityItf) : MapsPresenterItf{
 
         return listDataCoffeeNear
     }
+
+
+    override fun findMarkerById(id: String, listDataCoffee: ArrayList<ListCoffee_>) {
+
+        for ( coffeeLocation in listDataCoffee ) {
+            if ( coffeeLocation.id == id ) {
+                view.showMarkDidTap(coffeeLocation)
+                view.requestDirection()
+            }
+        }
+    }
+
 }
